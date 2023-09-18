@@ -3,6 +3,7 @@ import Searchbox from '../../components/Home/SearchBox'
 import logo from '../../assets/tv.png'
 import menu from '../../assets/Menu.png'
 import search from '../../assets/search.png'
+import { Link } from 'react-router-dom';
 
 interface Props {
   clicked: () => void
@@ -13,7 +14,7 @@ function Navigation({clicked}: Props) {
     <>
     <nav className='px-10 z-10 absolute top-3 flex justify-between w-full text-white'>
         <div className='flex items-center'>
-            <img src={logo} alt="" />
+           <Link to='/'><img src={logo} alt="" /></Link> 
             <p className='font-bold text-lg pl-2'>MovieBox</p>
         </div>
         <Searchbox />

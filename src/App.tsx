@@ -1,16 +1,18 @@
 import React from "react";
 import "./app.css";
 import HomePage from "./components/Home/HomePage";
-import Box from "./components/Movies/MovieDetail";
-// import Test from "./components/Movies/Test";
+import MoviePage from "./components/Movies/MovieDetail";
+import { Routes, Route } from 'react-router-dom';
 
 
 function App() {
 
   return (
   <>
-    <HomePage />
-    <Box />
+    <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/movie" element={<MoviePage />} />
+    </Routes>
   </>
   )
 }
