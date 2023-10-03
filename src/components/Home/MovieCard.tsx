@@ -5,11 +5,16 @@ import imdb from '../../assets/imdb.png';
 import Favorite from '../Home/Favorite'
 import { Link } from 'react-router-dom';
 
-interface Props {
-    users: string
-}
+export interface Movies {
+    id?: number;
+    title: string;
+    backdrop_path: string
+    poster_path: string;
+    overview: string;
+    release_date: string;
+  }
 
-function MovieCard(users: Props) {
+function MovieCard({id, title, backdrop_path, poster_path, overview, release_date}: any) {
     return (
     <>
     
