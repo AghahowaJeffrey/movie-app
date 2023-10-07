@@ -4,39 +4,59 @@ import TopRated from './TopRated';
 import Footer from './Footer';
 import { useEffect, useState } from "react"
 
-export interface Movies {
-    results: string[];
-    
-  }
+export interface Data {
+    page:          number;
+    results:       Result[];
+    total_pages:   number;
+    total_results: number;
+}
 
-const my_api_key = import.meta.env.VITE_API_KEY;
-      
-function HomePage() {
+export interface Result {
+    adult:             boolean;
+    backdrop_path:     string;
+    genre_ids:         number[];
+    id:                number;
+    original_language: string;
+    original_title:    string;
+    overview:          string;
+    popularity:        number;
+    poster_path:       string;
+    release_date:      string;
+    title:             string;
+    video:             boolean;
+    vote_average:      number;
+    vote_count:        number;
+}  
+
+const HomePage = () => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [errorMsg, setErrorMsg] = useState<any>()
-    const [movies, setMovies] = useState<Movies[]>([]);
+    const [errorMsg, setErrorMsg] = useState<string>();
+    const [movies, setMovies] = useState<Data | undefined>();
     
-    const FeaturedApi = `https://api.themoviedb.org/3/movie/top_rated?api_key=${my_api_key}`;
+    const FeaturedApi = "https://api.themoviedb.org/3/movie/popular?api_key=97b6f1f078f3a3e794e0287e760c2e1d";
     
     const getMovies = async (API: string) => {
         setLoading(true);
         try {
             const apiResponse = await fetch(API);
-            const json = await apiResponse.json();
-            setMovies(json);
-        } catch (error) {
+            const data : Data = await apiResponse.json();
+            if (data) {
+                setMovies(data);
+            }
+            
+        } catch (error: any) {
             setErrorMsg(error);
+            console.error('Something Went Wrong', errorMsg)
         }
-        setLoading(false)
+        setLoading(false);
     };
 
     useEffect(() => {
-        getMovies(FeaturedApi);
-    }, [FeaturedApi]);
-      
-    console.log(movies.map)
-    console.log(errorMsg)
-    
+        getMovies(FeaturedApi)
+    }, []);
+
+    console.log(movies)
+
     return (
     <>
         <Header />

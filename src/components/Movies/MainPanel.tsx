@@ -1,21 +1,61 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import banner from '../../assets/Trailer.png'
 import shows from '../../assets/best-movies.png'
 import star from '../../assets/Star.png'
 import list from '../../assets/List.png'
 import arrow from '../../assets/arrow.png'
 import ticket from '../../assets/tickets.png'
+import { useLocation } from 'react-router-dom'
+
+ interface Detail {
+  backdrop_path:         string;
+  genres:                Genre[]; //
+  original_title:        string; //
+  overview:              string;
+  popularity:            number; //
+  release_date:          Date; //
+  runtime:               number; //
+  vote_average:          number; //
+  vote_count:            number; //
+}
+
+export interface Genre {
+  id:   number;
+  name: string;
+}
 
 
+const main = () => {
+  let {state} = useLocation()
+  const [detail, setDetail] = useState<Detail | undefined>();
+
+  const detailApi =
+    `"https://api.themoviedb.org/3/movie/${state}?api_key=97b6f1f078f3a3e794e0287e760c2e1d"`;
+
+  const getDetail = async (API: string) => {
+    try {
+      const apiResponse = await fetch(API);
+      const data: Detail = await apiResponse.json();
+
+      if (data) {
+        setDetail(data);
+      }
+    } catch (error: any) {
+      console.error("Something Went Wrong", error);
+    }
+  };
+
+  useEffect(() => {
+    getDetail(detailApi);
+  }, []);
 
 
-function main() {
   return (
     <div className='m-6'>
       <img className='w-full  rounded-xl' src={banner} alt="" />
       <div className='flex justify-between p-3 font-semibold'>
         <div className=''>
-            <span className='font-bold'>Top Gun: Maverick . 2022 . PG-13 . 2h 10m</span>
+            <span className='font-bold'>{state}Top Gun: Maverick . 2022 . PG-13 . 2h 10m</span>
             <span className='pl-5 text-red-500'>Action</span>
             <span className='pl-5 text-red-500'>Drama</span>
         </div>
