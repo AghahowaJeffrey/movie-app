@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom'
   original_title:        string; //
   overview:              string;
   popularity:            number; //
-  release_date:          Date; //
+  release_date:          string; //
   runtime:               number; //
   vote_average:          number; //
   vote_count:            number; //
@@ -30,7 +30,7 @@ const main = () => {
   const [detail, setDetail] = useState<Detail | undefined>();
 
   const detailApi =
-    `"https://api.themoviedb.org/3/movie/${state}?api_key=97b6f1f078f3a3e794e0287e760c2e1d"`;
+    "https://api.themoviedb.org/3/movie/"+state+"?api_key=97b6f1f078f3a3e794e0287e760c2e1d";
 
   const getDetail = async (API: string) => {
     try {
@@ -49,20 +49,27 @@ const main = () => {
     getDetail(detailApi);
   }, []);
 
+  const toHoursAndMinutes = (totalMinutes: number) => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+  
+    return  `${hours}h ${minutes}m`;
+  }
 
   return (
     <div className='m-6'>
       <img className='w-full  rounded-xl' src={banner} alt="" />
       <div className='flex justify-between p-3 font-semibold'>
         <div className=''>
-            <span className='font-bold'>{state}Top Gun: Maverick . 2022 . PG-13 . 2h 10m</span>
+        <span className='font-bold'>{detail?.original_title} . {detail?.release_date.slice(0, 4)}
+         . PG-13 . { toHoursAndMinutes((detail ? detail.runtime: 0)) }</span>
             <span className='pl-5 text-red-500'>Action</span>
             <span className='pl-5 text-red-500'>Drama</span>
         </div>
         <div>
           <span className='flex items-center'>
             <img className='ml-1 justify-end w-6 m-1' src={star} alt="" />
-            <span ><span className='text-gray-400 pr-1' >8.5</span>|350k</span>
+            <span ><span className='text-gray-400 pr-1' >{detail?.popularity}</span>|{detail?.vote_count}k</span>
           </span>
         </div>
       </div>
@@ -70,9 +77,7 @@ const main = () => {
       <div className='p-3 block sm:flex'>
         <div className='sm:basis-[1000px] font-semibold mr-3'>
           <p>
-            After thirty years, Maverick is still pushing the envelope as a top naval aviator,
-            but must confront ghosts of his past when he leads TOP GUN's elite graduates
-            on a mission that demands the ultimate sacrifice from those chosen to fly it.
+            {detail?.overview}
           </p>
 
           <div className='flex mt-7 border-b-1 border-gray-00'>Director: <p className='text-red-600 font-semibold'>Joseph Kosinski</p></div>
