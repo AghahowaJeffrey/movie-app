@@ -8,6 +8,7 @@ import ticket from '../../assets/tickets.png'
 import { useLocation } from 'react-router-dom'
 
  interface Detail {
+  id: number;
   backdrop_path:         string;
   genres:                Genre[]; //
   original_title:        string; //
@@ -19,26 +20,51 @@ import { useLocation } from 'react-router-dom'
   vote_count:            number; //
 }
 
+interface Cast {
+  id: number
+  cast: [
+    {
+      name: string
+    }
+  ]
+  crew: [
+    {
+      name: string,
+      job: string,
+    }
+  ]
+}
+
 export interface Genre {
   id:   number;
   name: string;
 }
 
 
+
 const main = () => {
   let {state} = useLocation()
-  const [detail, setDetail] = useState<Detail | undefined>();
+  const [detail, setDetail] = useState<Detail>();
+  const [cast, setCast] = useState<Cast>();
+  const [writer, setWriter] = useState('');
+
+  const uri = "https://image.tmdb.org/t/p/original";
 
   const detailApi =
     "https://api.themoviedb.org/3/movie/"+state+"?api_key=97b6f1f078f3a3e794e0287e760c2e1d";
+  const castApi = 
+    "https://api.themoviedb.org/3/movie/"+state+"/credits?api_key=97b6f1f078f3a3e794e0287e760c2e1d";
 
-  const getDetail = async (API: string) => {
+  const getDetail = async (API: Array<string>) => {
     try {
-      const apiResponse = await fetch(API);
-      const data: Detail = await apiResponse.json();
+      const apiResponse = await Promise.all([
+        fetch(API[0]),
+        fetch(API[1])]);
+      const data = await Promise.all(apiResponse.map(r => r.json()));
 
       if (data) {
-        setDetail(data);
+        setDetail(data[0]);
+        setCast(data[1])
       }
     } catch (error: any) {
       console.error("Something Went Wrong", error);
@@ -46,7 +72,7 @@ const main = () => {
   };
 
   useEffect(() => {
-    getDetail(detailApi);
+    getDetail([detailApi, castApi]);
   }, []);
 
   const toHoursAndMinutes = (totalMinutes: number) => {
@@ -55,16 +81,18 @@ const main = () => {
   
     return  `${hours}h ${minutes}m`;
   }
+  console.log(state)
+  cast?.crew?.map(r => ((r?.job === 'original film writer') ? console.log(r.name): console.log(r.job)))
 
   return (
     <div className='m-6'>
-      <img className='w-full  rounded-xl' src={banner} alt="" />
+      <img className='w-full  rounded-xl' src={`${uri}${detail?.backdrop_path}`} alt="" />
       <div className='flex justify-between p-3 font-semibold'>
         <div className=''>
-        <span className='font-bold'>{detail?.original_title} . {detail?.release_date.slice(0, 4)}
-         . PG-13 . { toHoursAndMinutes((detail ? detail.runtime: 0)) }</span>
-            <span className='pl-5 text-red-500'>Action</span>
-            <span className='pl-5 text-red-500'>Drama</span>
+          <span className='font-bold'>{detail?.original_title} . {detail?.release_date.slice(0, 4)}
+          . PG-13 . { toHoursAndMinutes((detail ? detail.runtime: 0)) }</span>
+          
+          <span className='pl-5 text-red-500'>Drama</span>
         </div>
         <div>
           <span className='flex items-center'>
@@ -80,9 +108,16 @@ const main = () => {
             {detail?.overview}
           </p>
 
-          <div className='flex mt-7 border-b-1 border-gray-00'>Director: <p className='text-red-600 font-semibold'>Joseph Kosinski</p></div>
-          <div className='flex mt-7 border-b-1 border-gray-00'>Writers: <p className='text-red-600'>Jim Cash, Jack Epps Jr, Peter Craig</p></div>
-          <div className='flex mt-7 mb-5 border-b-1 border-gray-00'>Stars: <p className='text-red-600'>Tom Cruise, Jennifer Connelly, Miles Teller</p></div>
+          <div className='flex mt-7 border-b-1 border-gray-00'>Director:&nbsp;<p className='text-red-600 font-semibold'>{cast?.crew[0].name}</p></div>
+          <div className='flex mt-7 border-b-1 border-gray-00'>Writers:&nbsp;{(cast?.crew?.map(r => 
+            ((r?.job === 'Original Film Writer') ? 
+            setWriter(r.name): false))) ? <p className='text-red-600'>{writer};</p>: <p className='text-red-600'>Not Stated</p>  }</div>
+
+          <div className='flex mt-7 mb-5 border-b-1 border-gray-00'>Stars:&nbsp;{cast?.cast?.map((cast, index) => 
+          (
+            (index > 2) ? null : (<><span className='text-red-600' key={index}>{ cast.name },&nbsp;</span></>)
+          ))}
+          </div>
 
           <div className='flex border border-gray-200 rounded-lg font-bold justify-between items-center'>
             <div className='flex justify-between'>
