@@ -4,10 +4,11 @@ import MovieCard from './MovieCard';
 import { Data } from './HomePage';
 
 interface Props {
-    movies: Data | undefined
+    movies: Data | undefined;
+    loading: boolean;
 }
 
-const TopRated = ({movies}: Props) => {
+const TopRated = ({movies, loading}: Props) => {
     return <>
     <main className=''>
         <div className='mx-10 mt-10'>
@@ -16,7 +17,7 @@ const TopRated = ({movies}: Props) => {
                 <h2 className='text-red-600 text-sm font-semibold'>See more</h2>
             </div>
             <div className='sm:flex sm:flex-wrap gap-10 sm:flex-auto sm:justify-center'>
-            {movies?.results.map((movie) => <MovieCard key={movie.id} movie={movie} />)}
+            {movies?.results.map((movie) => <MovieCard key={movie.id} movie={movie} loading={loading} />)}
             </div>
         </div>
     </main>

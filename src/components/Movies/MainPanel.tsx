@@ -21,11 +21,11 @@ interface Detail {
 
 interface Cast {
   id: number;
-  cast: [Cast];
+  cast: [Casts];
   crew: [Crew];
 }
 
-interface Cast {
+interface Casts {
   name: string;
 }
 
@@ -80,7 +80,7 @@ const main = () => {
   };
 
   // Define the function to handle the mapping and concatenation
-  const getStarsSting = (cast: Cast[], times: number): string => {
+  const getStarsSting = (cast: Casts[], times: number): string => {
     let starString = '';
 
     for (let i = 0; i < times; i++) {
@@ -142,7 +142,7 @@ const main = () => {
           <span className="flex items-center">
             <img className="ml-1 justify-end w-6 m-1" src={star} alt="" />
             <span>
-              <span className="text-gray-400 pr-1">{detail?.popularity}</span>|
+              <span className="text-gray-400 pr-1">{String(((detail?.popularity || 0) / 1000)).slice(0,3)}</span>|
               {detail?.vote_count}k
             </span>
           </span>
