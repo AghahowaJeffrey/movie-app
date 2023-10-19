@@ -1,11 +1,10 @@
-import React from 'react'
 import logo from '../../assets/Tv.png'
 import logout from '../../assets/Logout.png'
 import movie from '../../assets/Movie.png'
 import tvshow from '../../assets/tvShow.png'
 import home from '../../assets/Home.png'
 import upcoming from '../../assets/Calendar.png'
-
+import { Link } from 'react-router-dom' 
 
 function SidePanel() {
   return (
@@ -15,7 +14,7 @@ function SidePanel() {
             <p className='font-bold text-lg pl-2'>MovieBox</p>
         </div>
         <div className='mt-24 text-center'>
-            <div className='p-7 hover:bg-red-200 hover:border-r-8 hover:border-red-950 hover:text-red-700 font-semibold flex items-center'><img className='mr-3' src={home} alt="" />Home</div>
+            <Link to="/"><div className='p-7 hover:bg-red-200 hover:border-r-8 hover:border-red-950 hover:text-red-700 font-semibold flex items-center'><img className='mr-3' src={home} alt="" />Home</div></Link>
             <div className='p-7 bg-red-200 border-r-8 border-red-950 text-red-700 font-semibold flex items-center'><img className='mr-3' src={movie} alt="" />Movies</div>
             <div className='p-7 hover:bg-red-200 hover:border-r-8 hover:border-red-950 hover:text-red-700 font-semibold flex items-center'><img className='mr-3' src={tvshow} alt="" />TV Series</div>
             <div className='p-7 hover:bg-red-200 hover:border-r-8 hover:border-red-950 hover:text-red-700 font-semibold flex items-center'><img className='mr-3' src={upcoming} alt="" />Upcoming</div>

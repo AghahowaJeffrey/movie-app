@@ -1,9 +1,8 @@
-import React from 'react'
 import { useState } from 'react';
 import tv from '../../assets/tvShow.png'
 
 function Favorite() {
-  let [addedFavourite, setAddedFavourite] = useState(0);
+  const [addedFavourite, setAddedFavourite] = useState(0);
   const handleClick = () => addedFavourite === 1 ? setAddedFavourite(0): setAddedFavourite(1)
 
 

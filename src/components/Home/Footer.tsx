@@ -1,4 +1,3 @@
-import React from 'react';
 import facebook from '../../assets/fa-brands_facebook-square.png'
 import instagram from '../../assets/fa-brands_instagram.png'
 import youtube from '../../assets/fa-brands_youtube.png'

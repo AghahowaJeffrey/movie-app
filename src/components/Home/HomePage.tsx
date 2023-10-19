@@ -1,10 +1,7 @@
-import React from 'react';
 import Header from './Header';
 import TopRated from './TopRated';
 import Footer from './Footer';
 import { useEffect, useState } from "react"
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 export interface Data {
     page:          number;
@@ -28,26 +25,29 @@ export interface Result {
     video:             boolean;
     vote_average:      number;
     vote_count:        number;
-}  
+} 
+
 
 const HomePage = () => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const [errorMsg, setErrorMsg] = useState<string>();
+    const [errorMsg, setErrorMsg] = useState<unknown>();
     const [movies, setMovies] = useState<Data>();
+    const [loaded, setLoaded] = useState<boolean>(false)
     
     const FeaturedApi = "https://api.themoviedb.org/3/movie/popular?api_key=97b6f1f078f3a3e794e0287e760c2e1d";
     
     const getMovies = async (API: string) => {
-         setLoading(false);
         try {
-            const apiResponse = await fetch(API);
-            const data : Data = await apiResponse.json();
+            fetch(API)
+            .then((apiResponse) => apiResponse.json())
+            .then((data) => {
+                setMovies(data)
+                if (data) {
+                    setMovies(data);
+                    setLoaded(true)
+                }
+            })
 
-            if (data) {
-                // setLoading(true) 
-                setMovies(data);
-            }
-        } catch (error: any) {
+        } catch (error: unknown) {
             setErrorMsg(error);
             console.error('Something Went Wrong', errorMsg)
         }
@@ -55,22 +55,18 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-        getMovies(FeaturedApi)
-    }, []);
+        setTimeout(() => {
+            getMovies(FeaturedApi)
+        }, 2000);
+        // getMovies(FeaturedApi)
+    }, );
 
     return (
-        <>
-        { loading ? 
-        <>
-        <Skeleton count={10} />
-        </>:
         <> 
             <Header />
-            <TopRated movies={movies} loading={loading} />
+            <TopRated movies={movies} loaded={loaded} />
             <Footer />
         </> 
-        }
-        </>
     )
 }
 

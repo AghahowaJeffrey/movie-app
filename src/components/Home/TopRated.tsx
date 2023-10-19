@@ -1,14 +1,12 @@
-import React from 'react';
 import MovieCard from './MovieCard';
-// import { Result } from './HomePage';
 import { Data } from './HomePage';
 
 interface Props {
     movies: Data | undefined;
-    loading: boolean;
+    loaded: boolean;
 }
 
-const TopRated = ({movies, loading}: Props) => {
+const TopRated = ({movies}: Props) => {
     return <>
     <main className=''>
         <div className='mx-10 mt-10'>
@@ -17,7 +15,7 @@ const TopRated = ({movies, loading}: Props) => {
                 <h2 className='text-red-600 text-sm font-semibold'>See more</h2>
             </div>
             <div className='sm:flex sm:flex-wrap gap-10 sm:flex-auto sm:justify-center'>
-            {movies?.results.map((movie) => <MovieCard key={movie.id} movie={movie} loading={loading} />)}
+            {movies?.results.map((movie) => <MovieCard key={movie.id} movie={movie} /> )}
             </div>
         </div>
     </main>

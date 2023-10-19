@@ -1,5 +1,4 @@
-import React from 'react'
-import search from '../../assets/search.png'
+import searchimg from '../../assets/searchimg.png'
 
 function HiddenSearch() {
   return (
@@ -10,7 +9,7 @@ function HiddenSearch() {
             type="text" 
             placeholder='what do you want to watch?' />
         </div>
-        <img className='w-5' src={search} alt="" />
+        <img className='w-5' src={searchimg} alt="" />
 
     </div>
     </>

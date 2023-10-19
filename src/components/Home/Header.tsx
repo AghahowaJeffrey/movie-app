@@ -1,24 +1,89 @@
-import React from 'react';
-import Nav from './Navigation';
+
+import Navigation from './Navigation';
 import banner from '../../assets/banner.png';
 import imdb from '../../assets/imdb.png'
 import peach from '../../assets/peach.png'
 import HiddenSearch from '../Home/HiddenSearch'
-import { useState } from 'react';
+import SearchPanel from './SearchPanel';
+import { useState,useEffect } from 'react';
 
-function Header() {
-const [toggle, setToggle] = useState(false)
+export interface SearchedMovies {
+    page:          number;
+    results:       Result[];
+    total_pages:   number;
+    total_results: number;
+}
 
-const onclicked = () => toggle == true ? setToggle(false) : setToggle(true)
+export interface Result {
+    adult:             boolean;
+    backdrop_path:     string;
+    genre_ids:         number[];
+    id:                number;
+    original_language: string;
+    original_title:    string;
+    overview:          string;
+    popularity:        number;
+    poster_path:       string;
+    release_date:      string;
+    title:             string;
+    video:             boolean;
+    vote_average:      number;
+    vote_count:        number;
+} 
+
+const Header = () => {
+    const [toggle, setToggle] = useState(false);
+    const [search, setSearch] = useState<string>('');
+    const [searchedMovies, getSearchedMovies] = useState<SearchedMovies>();
+
+    const onclicked = () => setToggle(!toggle);
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value);
+    };
+
+    useEffect(() => {
+        const searchMovies = async () => {
+            if (!search.trim()) {
+                // Don't make a request if the search query is empty
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${search}&api_key=97b6f1f078f3a3e794e0287e760c2e1d`);
+                const data = await response.json();
+                if (data) {
+                    getSearchedMovies(data);
+                }
+            } catch (error) {
+                console.error('Something Went Wrong', error);
+            }
+        };
+
+        const delayDebounceFn = setTimeout(() => {
+            searchMovies();
+        }, 300); // Debounce time set to 300 milliseconds
+
+        return () => {
+            clearTimeout(delayDebounceFn); // Clear the debounce timer if the component re-renders before the debounce time has elapsed
+        };
+    }, [search]);
+
+    // console.log(search)
+    // console.log(searchedMovies)
 
     return (
         <>
+            
             <section className='h-[500px] bg-black'>
                 {toggle == true && <HiddenSearch />}
                 <div className='relative'>
-                <img className='h-[500px] absolute' src={banner} alt="" />
+                    <img className='h-[500px] absolute' src={banner} alt="" />
 
-                    <Nav clicked={onclicked} />
+                    <Navigation clicked={onclicked} handleSearch={handleSearch} search={search} />
+
+                    {search ? <SearchPanel searchedMovies={searchedMovies} />: null}
+
                     <div className='w-80 ml-12 mb-28 absolute bottom-0 left-0 text-white'>
                         <h1 className='font-bold text-4xl'>John Wick 3: Parabellum</h1>
                         <div className="flex justify-between w-40 my-2">

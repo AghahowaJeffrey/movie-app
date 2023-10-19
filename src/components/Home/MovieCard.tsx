@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import peach from "../../assets/peach.png";
 import imdb from "../../assets/imdb.png";
 import Favorite from "../Home/Favorite";
 import { Link } from "react-router-dom";
-import { Data } from "./HomePage";
 import { Result } from "./HomePage";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 interface Props {
   movie: Result;
-  loading: boolean;
 }
 
 interface Genre {
@@ -20,11 +20,11 @@ interface Genre {
   ];
 }
 
-const uri = "https://image.tmdb.org/t/p/original";
 
-const MovieCard = ({ movie, loading }: Props) => {
+const MovieCard = ({ movie}: Props) => {
   const [genre, setGenre] = useState<Genre>();
 
+  const uri = "https://image.tmdb.org/t/p/original";
   const genreApi =
     "https://api.themoviedb.org/3/genre/movie/list?api_key=97b6f1f078f3a3e794e0287e760c2e1d";
 
@@ -36,7 +36,7 @@ const MovieCard = ({ movie, loading }: Props) => {
       if (data) {
         setGenre(data);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Something Went Wrong", error);
     }
   };
@@ -49,7 +49,6 @@ const MovieCard = ({ movie, loading }: Props) => {
       for (let y = 0; y < genre.genres.length; y++) {
         const genreId = movieGenre.genre_ids[x];
         const genreList = genre.genres[y];
-        console.log(genreList.id)
 
         if (genreId === genreList.id) {
          
@@ -73,10 +72,7 @@ const MovieCard = ({ movie, loading }: Props) => {
 
   return (
     <>
-      {loading ? (
-        <p className="text-xl text-center font-black">Loading...</p>
-      ) : (
-        <div className="mt-4 relative">
+        <div className="mt-4 relative w-[250px]">
           <Favorite />
           <Link to="/movie" state={movie.id}>
             <img
@@ -88,7 +84,7 @@ const MovieCard = ({ movie, loading }: Props) => {
               USA, {movie.release_date.slice(0, 4)}
             </p>
             <h3 className="text-lg font-bold text-gray-900 leading-3 pt-3 ">
-              {movie.title}
+            {movie.title || <Skeleton width={50}/>}
             </h3>
             <div className="flex justify-between">
               <div className="flex items-center pt-3">
@@ -96,6 +92,7 @@ const MovieCard = ({ movie, loading }: Props) => {
                 <p className="text-xs font-normal text-gray-900 block">
                   {movie.vote_average * 10} / 100
                 </p>
+                
               </div>
               <div className="flex pt-3 items-center">
                 <img src={peach} alt="" className="w-5 pr-1" />
@@ -105,11 +102,10 @@ const MovieCard = ({ movie, loading }: Props) => {
               </div>
             </div>
             <p className="text-xs font-bold text-gray-400 pt-3">
-              {genreName}
+              {genreName || <Skeleton />}
             </p>
           </Link>
         </div>
-      )}
     </>
   );
 };

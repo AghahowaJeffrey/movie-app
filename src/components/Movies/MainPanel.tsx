@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import shows from "../../assets/best-movies.png";
 import star from "../../assets/Star.png";
 import list from "../../assets/List.png";
 import arrow from "../../assets/arrow.png";
 import ticket from "../../assets/tickets.png";
 import { useLocation } from "react-router-dom";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 interface Detail {
   id: number;
@@ -39,8 +41,8 @@ export interface Genre {
   name: string;
 }
 
-const main = () => {
-  let { state } = useLocation();
+const MainPanel = () => {
+  const { state } = useLocation();
   const [detail, setDetail] = useState<Detail>();
   const [cast, setCast] = useState<Cast>();
 
@@ -64,14 +66,18 @@ const main = () => {
         setDetail(data[0]);
         setCast(data[1]);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Something Went Wrong", error);
     }
   };
 
   useEffect(() => {
-    getDetail([detailApi, castApi]);
-  }, []);
+    // setTimeout(() => {
+    //   getDetail([detailApi, castApi]);
+    // }, 2000)
+    getDetail([detailApi, castApi])
+    
+  }, );
 
   const toHoursAndMinutes = (totalMinutes: number) => {
     const hours = Math.floor(totalMinutes / 60);
@@ -122,6 +128,7 @@ const main = () => {
   
   const writers = getWritersString(cast?.crew || [], 'Original Film Writer', 5);
 
+
   return (
     <div className="m-6">
       <img
@@ -132,7 +139,7 @@ const main = () => {
       <div className="flex justify-between p-3 font-semibold">
         <div className="">
           <span className="font-bold">
-            {detail?.original_title} . {detail?.release_date.slice(0, 4)}. PG-13
+            {detail?.original_title || <Skeleton />} . {detail?.release_date.slice(0, 4) || <Skeleton />}. PG-13
             . {toHoursAndMinutes(detail ? detail.runtime : 0)}
           </span>
 
@@ -143,7 +150,7 @@ const main = () => {
             <img className="ml-1 justify-end w-6 m-1" src={star} alt="" />
             <span>
               <span className="text-gray-400 pr-1">{String(((detail?.popularity || 0) / 1000)).slice(0,3)}</span>|
-              {detail?.vote_count}k
+              {detail?.vote_count || <Skeleton />}k
             </span>
           </span>
         </div>
@@ -151,11 +158,11 @@ const main = () => {
 
       <div className="p-3 block sm:flex">
         <div className="sm:basis-[1000px] font-semibold mr-3">
-          <p>{detail?.overview}</p>
+          <p>{detail?.overview || <Skeleton count={5}/>}</p>
 
           <div className="flex mt-7 border-b-1 border-gray-00">
             Director:&nbsp;
-            <p className="text-red-600 font-semibold">{cast?.crew[0].name}</p>
+            <p className="text-red-600 font-semibold">{cast?.crew[0].name || <Skeleton width={100}/>}</p>
           </div>
 
           <div className="flex mt-7 border-b-1 border-gray-00">
@@ -169,7 +176,7 @@ const main = () => {
 
           <div className="flex mt-7 mb-5 border-b-1 border-gray-00">
             Stars:&nbsp;
-            <span className="text-red-600">{stars}</span>
+            <span className="text-red-600">{stars || <Skeleton width={300}/>}</span>
           </div>
 
           <div className="flex border border-gray-200 rounded-lg font-bold justify-between items-center">
@@ -208,4 +215,4 @@ const main = () => {
   );
 };
 
-export default main;
+export default MainPanel;

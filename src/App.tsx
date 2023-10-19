@@ -1,4 +1,4 @@
-import React from "react";
+
 import "./app.css";
 import HomePage from "./components/Home/HomePage";
 import MoviePage from "./components/Movies/MovieDetail";
